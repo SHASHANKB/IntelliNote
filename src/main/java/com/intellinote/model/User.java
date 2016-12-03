@@ -1,25 +1,26 @@
-package model;
+package main.java.com.intellinote.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by shashankbhardwaj on 26/11/16.ss
  */
 @Entity
 @Table(name = "user")
-public class User {
+public class User extends AbstractTimestampEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer UserId;
+
+    @Column(name = "email", unique = true)
+    private String  Email;
 
     @Column(name = "first_name")
     private String  firstName;
 
     @Column(name = "last_name")
     private String  lastName;
-
-    @Column(name = "email")
-    private String  Email;
 
     @Column(name = "phone")
     private Long    phone;

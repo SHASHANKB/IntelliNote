@@ -1,10 +1,21 @@
-package model;
+package main.java.com.intellinote.model;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
  * Created by shashankbhardwaj on 26/11/16.
  */
-public class NoteContent {
+public class NoteContent extends AbstractTimestampEntity implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int ncId;
+
+    @Column(name = "content")
     private String content;
 
     public int getNcId() {

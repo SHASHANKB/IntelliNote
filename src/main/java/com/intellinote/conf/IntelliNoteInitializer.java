@@ -1,25 +1,39 @@
 package main.java.com.intellinote.conf;
 
+import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRegistration;
 
 
 /**
  * Created by shashankbhardwaj on 29/11/16.
  */
-public class IntelliNoteInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
-        @Override
-        protected Class<?>[] getRootConfigClasses() {
-            return new Class[]{IntelliNoteConf.class};
-        }
+public class IntelliNoteInitializer implements WebApplicationInitializer {
 
-        @Override
-        protected Class<?>[] getServletConfigClasses() {
-            return null;
-        }
+    @Override
+    public void onStartup(ServletContext container) {
+        // Create the 'root' Spring application context
+        AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
+        rootContext.register(IntelliNoteConf.class);
 
-        @Override
-        protected String[] getServletMappings() {
-            return new String[] { "/" };
-        }
+        // Manage the lifecycle of the root application context
+        container.addListener(new ContextLoaderListener(rootContext));
+
+        // Create the dispatcher servlet's Spring application context
+        AnnotationConfigWebApplicationContext dispatcherContext =
+                new AnnotationConfigWebApplicationContext();
+        dispatcherContext.register(IntelliNoteConf.class);
+
+        // Register and map the dispatcher servlet
+        ServletRegistration.Dynamic dispatcher =
+                container.addServlet("dispatcher", new DispatcherServlet(dispatcherContext));
+        dispatcher.setLoadOnStartup(1);
+        dispatcher.addMapping("/");
+    }
 }

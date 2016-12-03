@@ -1,15 +1,35 @@
-package model;
+package main.java.com.intellinote.model;
 
+import javax.annotation.Generated;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by shashankbhardwaj on 26/11/16.
  */
-public class Note {
+@Entity
+public class Note extends AbstractTimestampEntity implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int noteId;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "note_content")
     private NoteContent noteContent;
-    private int userId;
-    private Date creationDate;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private User user;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created", nullable = false)
+    private Date created;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated", nullable = false)
+    private Date updated;
 
 
     public int getNoteId() {
@@ -20,6 +40,14 @@ public class Note {
         this.noteId = noteId;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public NoteContent getNoteContent() {
         return noteContent;
     }
@@ -28,20 +56,22 @@ public class Note {
         this.noteContent = noteContent;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
+    @PrePersist
+    protected void onCreate(){
+        created = new Date();
     }
 
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    @PreUpdate
+    protected void onUpdate(){
+        updated = new Date();
     }
 
     @Override
